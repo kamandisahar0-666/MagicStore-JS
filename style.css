@@ -1,141 +1,197 @@
 :root {
-    --card-bg: rgba(255, 255, 255, 0.25);
-    --text-color: #2d3436;
-    --accent-color: #ffffff;
-    --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
-}
-
-.dark-mode {
-    --card-bg: rgba(0, 0, 0, 0.4);
-    --text-color: #ffffff;
-    --accent-color: #00d2ff;
-    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    transition: background 0.5s ease, color 0.5s ease;
+    --primary: #ff6b6b;
+    --secondary: #4ecdc4;
+    --accent: #ffe66d;
+    --bg: #f7f8fc;
+    --glass: rgba(255, 255, 255, 0.85);
 }
 
 body {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80');
-    background-size: cover;
-    background-position: center;
-    overflow: hidden;
-    position: relative;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    overflow-x: hidden;
 }
 
-body::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.2); 
+/* ✅ پس زمینه بلاب */
+.bg-blobs {
+    position: fixed;
+    inset: 0;
     z-index: -1;
 }
 
-/* افکت ذرات */
-#tsparticles {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 0;
-    pointer-events: none;
-}
-
-.container {
-    width: 100%;
-    max-width: 420px;
-    padding: 20px;
-    position: relative;
-    z-index: 10;
-}
-
-.theme-toggle {
+.blob {
     position: absolute;
-    top: 30px; right: 30px;
-    width: 50px; height: 50px;
-    background: var(--card-bg);
-    backdrop-filter: blur(10px);
+    width: 400px;
+    height: 400px;
+    filter: blur(80px);
     border-radius: 50%;
-    display: flex;
-    justify-content: center; align-items: center;
-    cursor: pointer;
-    color: var(--text-color);
-    border: 1px solid rgba(255,255,255,0.2);
+    opacity: 0.5;
+    animation: move 20s infinite alternate;
+}
+
+.blob:nth-child(1) { background: #ff9a9e; }
+.blob:nth-child(2) { background: #a18cd1; left: 50%; }
+.blob:nth-child(3) { background: #84fab0; top: 60%; left: 20%; }
+
+@keyframes move {
+    from { transform: translate(-10%, -10%); }
+    to { transform: translate(20%, 20%); }
+}
+
+/* ✅ HEADER */
+header {
+    padding: 20px 5%;
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
     z-index: 100;
 }
 
-.search-section {
+nav {
     display: flex;
-    gap: 10px;
-    margin-bottom: 25px;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.search-section input {
-    flex: 1;
-    padding: 15px;
-    border-radius: 15px;
-    border: none;
-    background: var(--card-bg);
-    backdrop-filter: blur(10px);
-    color: var(--text-color);
-    outline: none;
+.nav-links a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: 0.3s;
 }
 
-.search-section button {
-    width: 55px;
-    border-radius: 15px;
+.nav-links a:hover {
+    color: var(--primary);
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.logo span {
+    color: var(--primary);
+}
+
+/* ✅ HERO */
+.hero {
+    text-align: center;
+    padding: 70px 20px 40px;
+}
+
+/* ✅ SECTION TITLE */
+.section-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* ✅ GRID 3x3 ثابت */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 35px;
+    padding: 0 8% 60px;
+}
+
+/* ✅ CARD */
+.product-card {
+    background: var(--glass);
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    transition: 0.3s;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.product-card:hover {
+    transform: translateY(-10px) scale(1.03);
+}
+
+.product-card img {
+    max-width: 100%;
+    height: 200px;
+    object-fit: contain;
+}
+
+.price {
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.add-btn {
+    background: linear-gradient(90deg, var(--primary), #ff8e8e);
+    color: white;
     border: none;
-    background: var(--accent-color);
-    color: #2c3e50;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.add-btn:active {
+    transform: scale(0.9);
+}
+
+/* ✅ CART PANEL */
+.cart-panel {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 350px;
+    height: 100%;
+    background: white;
+    transition: 0.4s;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.cart-panel.active {
+    right: 0;
+}
+
+/* ✅ FOOTER */
+footer {
+    background: #111;
+    color: white;
+    padding: 50px 10%;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.socials i {
+    margin-right: 15px;
+    font-size: 20px;
     cursor: pointer;
 }
 
-.weather-card {
-    background: var(--card-bg);
-    backdrop-filter: blur(15px);
-    border-radius: 30px;
-    padding: 40px 30px;
+.copyright {
     text-align: center;
-    color: var(--text-color);
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: var(--shadow);
+    opacity: 0.7;
 }
 
-.weather-icon-large {
-    font-size: 80px;
-    margin-bottom: 20px;
+/* ✅ ریسپانسیو */
+@media (max-width: 992px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-#temperature { font-size: 4rem; font-weight: 800; }
+@media (max-width: 600px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
 
-.quote-box {
-    margin: 20px 0;
-    font-style: italic;
-    opacity: 0.8;
+    .footer-content {
+        flex-direction: column;
+        gap: 30px;
+    }
 }
-
-.extra-details {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-}
-
-.detail-item i { font-size: 1.5rem; color: var(--accent-color); margin-right: 5px; }
-
-/* انیمیشن‌ها */
-.fa-sun { color: #ffce54; animation: spin 10s linear infinite; }
-.fa-cloud { color: #ecf0f1; animation: drift 3s ease-in-out infinite; }
-.fa-snowflake { color: #ffffff; animation: pulse 2s infinite; }
-
-@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes drift { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(10px); } }
-@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
