@@ -2,111 +2,69 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Magic Store</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <title>WeatherScope Pro </title>
     <link rel="stylesheet" href="style.css">
+    <!-- کتابخانه‌های مورد نیاز -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
-<body>
+<body class="light-mode">
 
-<!-- 🔮 پس‌زمینه متحرک -->
-<div class="bg-blobs">
-    <div class="blob"></div>
-    <div class="blob"></div>
-    <div class="blob"></div>
-</div>
+    <!-- کانتینر افکت‌های باران و برف -->
+    <div id="tsparticles"></div>
 
-<!-- ✅ HEADER -->
-<header>
-    <nav>
-        <div class="logo">✨ Magic<span>Store</span></div>
-
-        <div class="nav-links">
-            <a href="#">Home</a>
-            <a href="#">Shop</a>
-            <a href="#">Offers</a>
-            <a href="#">Contact</a>
-        </div>
-
-        <div class="cart-icon" id="cartBtn">
-            <i class="fas fa-shopping-bag"></i>
-            <span id="cartCount">0</span>
-        </div>
-    </nav>
-</header>
-
-<main>
-
-    <!-- ✅ HERO -->
-    <section class="hero">
-        <h1 class="animate__animated animate__fadeInDown">
-            New Collection 2026
-        </h1>
-        <p class="animate__animated animate__fadeInUp">
-            Discover amazing products with magic vibes!
-        </p>
-    </section>
-
-    <!-- ✅ PRODUCTS GRID (3x3) -->
-    <section class="products-section">
-        <h2 class="section-title">✨ Featured Products ✨</h2>
-
-        <div class="products-grid" id="productsGrid">
-            <div class="loader"></div>
-        </div>
-    </section>
-
-</main>
-
-<!-- ✅ CART PANEL -->
-<div class="cart-panel" id="cartPanel">
-    <div class="cart-header">
-        <h2>Your Basket</h2>
-        <button id="closeCart">&times;</button>
+    <!-- دکمه تغییر تم -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
     </div>
 
-    <div class="cart-items" id="cartItems"></div>
-
-    <div class="cart-footer">
-        <h3>Total: $<span id="cartTotal">0</span></h3>
-        <button class="checkout-btn">Checkout Now</button>
-    </div>
-</div>
-
-<!-- ✅ FOOTER -->
-<footer>
-    <div class="footer-content">
-
-        <div>
-            <h3>✨ MagicStore</h3>
-            <p>Your happy online shopping destination.</p>
+    <div class="container animate__animated animate__fadeIn">
+        <!-- بخش جستجو -->
+        <div class="search-section">
+            <input type="text" id="cityInput" placeholder="Find your city...">
+            <button id="searchBtn"><i class="fas fa-search-location"></i></button>
         </div>
 
-        <div>
-            <h4>Quick Links</h4>
-            <p>Home</p>
-            <p>Shop</p>
-            <p>Contact</p>
-        </div>
+        <!-- کارت اصلی آب و هوا -->
+        <div class="weather-card" id="weatherCard" data-tilt>
+            <div class="main-info">
+                <div id="iconContainer" class="animate__animated animate__zoomIn">
+                    <i id="weatherIcon" class="fas fa-sun weather-icon-large"></i>
+                </div>
+                <h1 id="temperature">--°C</h1>
+                <h2 id="cityName">Enter a City</h2>
+                <p id="description">Ready to check the weather?</p>
+            </div>
 
-        <div>
-            <h4>Follow Us</h4>
-            <div class="socials">
-                <i class="fab fa-instagram"></i>
-                <i class="fab fa-twitter"></i>
-                <i class="fab fa-facebook"></i>
+            <div class="quote-box">
+                <p id="weatherQuote">"Your vibe attracts your tribe."</p>
+            </div>
+
+            <!-- جزئیات اضافی -->
+            <div class="extra-details">
+                <div class="detail-item">
+                    <i class="fas fa-tint"></i>
+                    <div>
+                        <span id="humidity">--%</span>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-wind"></i>
+                    <div>
+                        <span id="wind">-- km/h</span>
+                        <p>Wind</p>
+                    </div>
+                </div>
             </div>
         </div>
-
     </div>
 
-    <p class="copyright">
-        © 2026 MagicStore. All rights reserved.
-    </p>
-</footer>
-
-<script src="script.js"></script>
+    <!-- اسکریپت‌های کتابخانه‌ها -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles-confetti@2.12.0/tsparticles.confetti.bundle.min.js"></script>
+    <!-- اسکریپت اصلی پروژه -->
+    <script src="script.js"></script>
 </body>
 </html>

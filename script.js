@@ -1,109 +1,94 @@
-const productsGrid = document.getElementById('productsGrid');
-const cartCount = document.getElementById('cartCount');
-const cartPanel = document.getElementById('cartPanel');
-const cartItemsContainer = document.getElementById('cartItems');
-const cartTotal = document.getElementById('cartTotal');
-const cartBtn = document.getElementById('cartBtn');
-const closeCart = document.getElementById('closeCart');
+const apiKey = "c9ea3a0e80b36a06c024c858d9291d2e";
+const body = document.body;
 
-let cart = [];
+// تغییر تم
+document.getElementById("themeToggle").addEventListener("click", () => {
+    body.classList.toggle("dark-mode");
+    const icon = document.querySelector("#themeToggle i");
+    icon.classList.toggle("fa-moon");
+    icon.classList.toggle("fa-sun");
+});
 
-// ۱. دریافت محصولات از API
-async function fetchProducts() {
+const quotes = {
+    Clear: "Sun is out, fun is out!",
+    Clouds: "Just a few clouds in the sky.",
+    Rain: "Grab an umbrella and enjoy the rhythm.",
+    Snow: "Time for a snowball fight!",
+    Thunderstorm: "Nature is being loud today.",
+    Default: "Have a great day!"
+};
+
+async function checkWeather(city) {
+    if (!city) return;
     try {
-        // نمایش لودر قبل از دریافت
-        productsGrid.innerHTML = '<div class="loader">Loading Magic...</div>';
+        const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&q=${city}&appid=${apiKey}`);
+        if (res.status == 404) { alert("City not found!"); return; }
         
-        const response = await fetch('https://fakestoreapi.com/products?limit=9');
-        
-        if (!response.ok) throw new Error('Network response was not ok');
-        
-        const products = await response.json();
-        displayProducts(products);
-        
-    } catch (error) {
-        console.error('Error fetching products:', error);
-        productsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">
-            ❌ Failed to load products. Please check your internet or refresh.
-        </p>`;
+        const data = await res.json();
+        const status = data.weather[0].main;
+
+        document.getElementById("cityName").innerText = data.name;
+        document.getElementById("temperature").innerText = Math.round(data.main.temp) + "°C";
+        document.getElementById("humidity").innerText = data.main.humidity + "%";
+        document.getElementById("wind").innerText = data.wind.speed + " km/h";
+        document.getElementById("description").innerText = data.weather[0].description;
+        document.getElementById("weatherQuote").innerText = quotes[status] || quotes.Default;
+
+        updateIcon(status);
+        updateBackground(status);
+        updateWeatherEffects(status);
+
+    } catch (err) { console.error(err); }
+}
+
+function updateIcon(status) {
+    const icon = document.getElementById("weatherIcon");
+    icon.className = "fas weather-icon-large ";
+    if (status === "Clear") icon.classList.add("fa-sun");
+    else if (status === "Clouds") icon.classList.add("fa-cloud");
+    else if (status === "Rain") icon.classList.add("fa-cloud-showers-heavy");
+    else if (status === "Snow") icon.classList.add("fa-snowflake");
+    else icon.classList.add("fa-smog");
+}
+
+function updateBackground(status) {
+    const backgrounds = {
+        Clear: "https://images.unsplash.com/photo-1506452305024-9d3f02d1c90a?q=80&w=1920",
+        Clouds: "https://images.unsplash.com/photo-1534088568595-a066f410bcda?q=80&w=1920",
+        Rain: "https://images.unsplash.com/photo-1438449805896-28a666819a20?q=80&w=1920",
+        Snow: "https://images.pexels.com/photos/60561/winter-snow-nature-ice-60561.jpeg?auto=compress&w=1920"
+    };
+    const url = backgrounds[status] || backgrounds.Clear;
+    body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('${url}')`;
+}
+
+async function updateWeatherEffects(status) {
+    if (typeof tsParticles === "undefined") return;
+    const container = tsParticles.domItem(0);
+    if (container) container.destroy();
+
+    if (status === "Rain") {
+        await tsParticles.load("tsparticles", {
+            particles: {
+                number: { value: 100 },
+                shape: { type: "line" },
+                opacity: { value: 0.5 },
+                size: { value: { min: 1, max: 2 } },
+                move: { enable: true, speed: 20, direction: "bottom", straight: true }
+            }
+        });
+    } else if (status === "Snow") {
+        await tsParticles.load("tsparticles", {
+            particles: {
+                number: { value: 100 },
+                shape: { type: "circle" },
+                opacity: { value: 0.8 },
+                size: { value: { min: 2, max: 5 } },
+                move: { enable: true, speed: 2, direction: "bottom" }
+            }
+        });
     }
 }
 
-// ۲. نمایش محصولات در صفحه
-function displayProducts(products) {
-    productsGrid.innerHTML = ''; // پاک کردن لودر
-    
-    products.forEach(product => {
-        const productCard = document.createElement('div');
-        productCard.className = 'product-card animate__animated animate__fadeInUp';
-        
-        productCard.innerHTML = `
-            <img src="${product.image}" alt="${product.title}">
-            <h3>${product.title.substring(0, 30)}...</h3>
-            <p class="price">$${product.price}</p>
-            <button class="add-btn" onclick="addToCart(${product.id}, '${product.title.replace(/'/g, "\\'")}', ${product.price}, '${product.image}')">
-                Add to Cart
-            </button>
-        `;
-        productsGrid.appendChild(productCard);
-    });
-}
-
-// ۳. افزودن به سبد خرید
-window.addToCart = (id, title, price, image) => {
-    const existingItem = cart.find(item => item.id === id);
-    
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        cart.push({ id, title, price, image, quantity: 1 });
-    }
-    
-    updateCart();
-    
-    // انیمیشن لرزش سبد خرید هنگام افزودن
-    cartBtn.classList.add('animate__animated', 'animate__rubberBand');
-    setTimeout(() => cartBtn.classList.remove('animate__rubberBand'), 1000);
-};
-
-// ۴. بروزرسانی سبد خرید
-function updateCart() {
-    // تعداد کل
-    const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-    cartCount.innerText = totalCount;
-    
-    // لیست آیتم‌ها
-    cartItemsContainer.innerHTML = '';
-    let totalPrice = 0;
-    
-    cart.forEach(item => {
-        totalPrice += item.price * item.quantity;
-        
-        const itemEl = document.createElement('div');
-        itemEl.className = 'cart-item';
-        itemEl.innerHTML = `
-            <img src="${item.image}" width="40">
-            <div style="flex:1">
-                <small>${item.title.substring(0, 20)}...</small><br>
-                <strong>${item.quantity} x $${item.price}</strong>
-            </div>
-            <button onclick="removeFromCart(${item.id})" style="border:none; background:none; cursor:pointer; color:red">×</button>
-        `;
-        cartItemsContainer.appendChild(itemEl);
-    });
-    
-    cartTotal.innerText = totalPrice.toFixed(2);
-}
-
-// ۵. حذف از سبد
-window.removeFromCart = (id) => {
-    cart = cart.filter(item => item.id !== id);
-    updateCart();
-};
-
-// ۶. باز و بسته کردن پنل سبد
-cartBtn.addEventListener('click', () => cartPanel.classList.add('active'));
-closeCart.addEventListener('click', () => cartPanel.classList.remove('active'));
-
-// شروع برنامه
-fetchProducts();
+document.getElementById("searchBtn").addEventListener("click", () => checkWeather(document.getElementById("cityInput").value));
+document.getElementById("cityInput").addEventListener("keypress", (e) => { if (e.key === "Enter") checkWeather(e.target.value); });
